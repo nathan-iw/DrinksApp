@@ -7,10 +7,10 @@ class Database():
 
     def get_connection(self):  # function to get the connection string using: pymysql.connect(host, username, password, database)
         db_connection = pymysql.connect(
-            login.db_host,  # host
-            login.user_name,  # username
-            login.password,  # password
-            login.database  # database
+            login.db_host,  # host address
+            login.user_name,  # user name
+            login.password,  # pw
+            login.database  # db
         )
         return db_connection
 
