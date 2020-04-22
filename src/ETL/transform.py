@@ -20,8 +20,8 @@ def name_breaker(name): # Function to reformat names into the order "title","fir
     return (title, first_name, last_name) # Either way, return the define values: title, first_name, last_name
 
 # Name,DOB,Address,email,billing address,ccn
-def process_customers(data):
-    customer_list=[]
+def process_people(data):
+    people_list=[]
     for row in data:
         if len(row) == 0 or row[0] == "Name": # check for empty rows or rows indicating table headers 
             continue # if the above is the case skips that row 
@@ -30,16 +30,10 @@ def process_customers(data):
         except ValueError: # if that fails gives a value error
             continue # then skips that row
         title, first_name, last_name = name_breaker(row[0]) # assigning the values in the tuple
-        customer_tuple = (title, first_name, last_name, age, card_masker(row[-1])) # making a new tuple with the age and masked ccn
-        customer_list.append(customer_tuple) # appending aforementioned tuple to the customer_list
-    return customer_list # returns list 
-        
-def card_masker(card):
-    if len(card) > 4: # if the card length is more than 4 then....
-        digits = card.replace(card[:-4], (len(card)-4) * "X") # X out everything othet than the last 4 digits
-        return(digits) # returns the disguised ccn 
-    else: 
-        return("invalid ccn") # me no likey. this is an error - which gets recorded in the db.
+        person_tuple = (first_name, last_name, age) # making a new tuple with the age and masked ccn
+        people_list.append(person_tuple) # appending aforementioned tuple to the people_list
+    return people_list # returns list
+
 
 def age_gen(dob): # generate an age from a dob
     days_in_year = 365.2425 # defines how many days are a year including leap years 
@@ -48,4 +42,3 @@ def age_gen(dob): # generate an age from a dob
     age = int((date.today() - birth_date).days / days_in_year) # Defining variable age as: todays date subtract the birth_date, format this in number of days and divide by the days in the year. 
     return age # returns age in years
 
-# mr. roy lewis,1922-12-30,"472 Marian ridges,Smithmouth,TQ5R 7UW",collinsalexander@hotmail.com,"472 Marian ridges,Smithmouth,TQ5R 7UW",630410320802
