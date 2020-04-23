@@ -13,12 +13,3 @@ def csv_load(file):
     except Exception as error:
         print(f" error {error}")
 
-
-if __name__== "__main__":
-    run=input("Do you really want to run this big file? Y/N: ")
-    if run.lower() == "y":
-        csv_load("customer.csv")
-    else:
-        exit()
-
-
