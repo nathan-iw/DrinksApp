@@ -14,6 +14,23 @@ soft_drink = []
 alc_drink = []
 orders = {}
 
+def bye_mate():
+    ciao = """
+$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$$$$$$$$$$$$$$$$$$$$$
+$$$$$'`$adiosamigo$'`$$$$
+$$$$$$  $$$$$$$$$$$  $$$$
+$$$$$$$  '$/ `/ `$' .$$$$
+$$$$$$$$. i  i  /! .$$$$$
+$$$$$$$$$.--'--'   $$$$$$
+$$^^$$$$$'        J$$$$$$
+$$$   ~""   `.   .$$$$$$$
+$$$$$e,      ;  .$$$$$$$$
+$$$$$$$$$$$.'   $$$$$$$$$
+$$$$$$$$$$$$.    $$$$$$$$
+$$$$$$$$$$$$$    $$$$$$$$"""
+    return ciao
+
 def clear_screen():
     os.system("clear")
 
@@ -141,14 +158,14 @@ class App():
                     # # save drinks(alc)
                     # persist.save(alc_drink,"alc_drink")
                     # # save round
+                    print(bye_mate())
                     exit()
                 else:
+                    print(bye_mate())
                     exit()
+
             elif selection.lower() == "data":
                 self.save_csv_customers("customers.csv")
-
-
-
 
 
 if __name__ == "__main__":

@@ -1,5 +1,9 @@
 supersecret.py
-.idea
+
+T_C.sh
+db_connect.sh
+coverage.sh
+.coverage
 __pycache__/
 .DS_Store
 # Environments
