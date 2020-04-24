@@ -13,10 +13,12 @@ class AlcDrink:
         return self.drink_name
 
 
-def make_alc_drink(alcoholic_drink_list):
+def make_alc_drink(db, alcoholic_drink_list):
     drink_name = input("What alcoholic drink do you want? ")
-    specifics = input(f"{drink_name}, no problem - anything special? ")
-    new_id = persist.save_drink("alc_drink",drink_name,specifics,None)
-    new_drink = AlcDrink(drink_name, specifics, int(new_id))
+    size = input(f"{drink_name}, no problem - large or small? ")
+    new_id = db.save_drink("alc_drink",drink_name,size,None)
+    new_drink = AlcDrink(drink_name, size, int(new_id))
     alcoholic_drink_list.append(new_drink)
+    print("Drink added successfully")
     return new_drink
+

@@ -24,16 +24,17 @@ class SoftDrink:
         return self.drink_name
 
 
-def make_soft_drink(soft_drink_list):
+def make_soft_drink(db, soft_drink_list):
     drink_name = input("What soft drink can I get you? ")
     glass = plus("Glass")
     if glass:
         ice = plus("Ice")
     else:
         ice = False
-    new_id = persist.save_drink("soft_drink",drink_name,glass,ice)
+    new_id = db.save_drink("soft_drink",drink_name,glass,ice)
     new_drink = SoftDrink(drink_name, glass, ice, int(new_id))
     soft_drink_list.append(new_drink)
+    print("Drink added successfully")
     return new_drink
 
 

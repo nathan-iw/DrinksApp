@@ -19,13 +19,15 @@ class HotDrink:
     def get_name(self):
         return self.drink_name
 
-def make_hot_drink(hot_drink_list):
+
+def make_hot_drink(db, hot_drink_list):
     drink_name = input("What hot drink can I get you? ")
     milk = plus("Milk")
     sugar = input("One lump or two? ")
-    new_id = persist.save_drink("hot_drink",drink_name,milk,sugar)
+    new_id = db.save_drink("hot_drink",drink_name,milk,sugar)
     new_drink = HotDrink(drink_name, milk, sugar, int(new_id))
     hot_drink_list.append(new_drink)
+    print("Drink added successfully")
     return new_drink
 
 

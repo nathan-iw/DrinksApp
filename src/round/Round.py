@@ -10,7 +10,8 @@ class Round:
 
     """Class to create a round of drinks, which is created with the name of the round brewer"""
 
-    def __init__(self, brewer, hot_drink, soft_drink, alc_drink):
+    def __init__(self, db, brewer, hot_drink, soft_drink, alc_drink):
+        self.db = db
         self.brewer = brewer
         self.orders = {}  # Dictionary to store key: value pairs of person_name: HotDrink/SoftDrink/AlcoholicDrink
         self.hot_drink = hot_drink
@@ -19,7 +20,7 @@ class Round:
 
     def add_drinker(self, person):
         """Method to add drinkers (and their drinks) to the round and a drink for the brewer"""
-        self.orders[person] = self.choose_drink(person)
+        self.orders[person] = self.choose_drink(person).get_info()
 
 
     def choose_drink(self, person):
@@ -38,7 +39,7 @@ class Round:
                 else:
                     person.fav_hd_id = None
             else:
-                choice = h.make_hot_drink(self.hot_drink)  # Add each additional name and drink to the order​
+                choice = h.make_hot_drink(self.db, self.hot_drink)  # Add each additional name and drink to the order​
                 person.fav_hd_id = choice.id
                 db.update(person.id,"fav_hd_id",person.fav_hd_id)
             return choice
@@ -50,7 +51,7 @@ class Round:
                 else:
                     person.fav_sd_id = None
             else:
-                choice = s.make_soft_drink(self.soft_drink)  # Add each additional name and drink to the order​
+                choice = s.make_soft_drink(self.db, self.soft_drink)  # Add each additional name and drink to the order​
                 person.fav_sd_id = choice.id
                 db.update(person.id, "fav_sd_id", person.fav_sd_id)
             return choice
@@ -62,7 +63,7 @@ class Round:
                 else:
                     person.fav_ad_id = None
             else:
-                choice = a.make_alc_drink(self.alc_drink)  # Add each additional name and drink to the order​
+                choice = a.make_alc_drink(self.db, self.alc_drink)  # Add each additional name and drink to the order​
                 person.fav_ad_id = choice.id
                 db.update(person.id, "fav_ad_id", person.fav_ad_id)
             return choice

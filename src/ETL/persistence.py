@@ -1,5 +1,5 @@
 import pymysql
-from src.db import db_login as login
+from os import environ
 from src.drinks import HotDrink as h, SoftDrink as s, AlcDrink as a
 from src.ETL import Person as p
 
@@ -7,10 +7,10 @@ class Database():
 
     def get_connection(self):  # function to get the connection string using: pymysql.connect(host, username, password, database)
         db_connection = pymysql.connect(
-            login.db_host,  # host address
-            login.user_name,  # user name
-            login.password,  # pw
-            login.database  # db
+            environ.get("DB_HOST"),  # host
+            environ.get("DB_USER"),  # username
+            environ.get("DB_PW"),  # password
+            environ.get("DB_NAME")  # database
         )
         return db_connection
 
@@ -70,8 +70,7 @@ class Database():
         connection.close()
         return table
 
-
-    def save_person(self, first,last,age):
+    def save_person(self, first, last, age):
         connection = self.get_connection()
         cursor = connection.cursor()
         args = (first, last, age)
@@ -84,6 +83,33 @@ class Database():
         cursor.close()
         connection.close()
         return new_id
+
+    def delete_person(self, id):
+        connection = self.get_connection()
+        cursor = connection.cursor()
+        arg = id
+        try:
+            cursor.execute(f"DELETE FROM person WHERE id=%s",arg)  # %s prevents SQL injection!
+            connection.commit()
+            cursor.close()
+            connection.close()
+            print("Person deleted successfully")
+        except Exception as err:
+            print(err)
+
+    def delete_drink(self, drink_type, drink):
+        connection = self.get_connection()
+        cursor = connection.cursor()
+        table = drink_type
+        arg = drink
+        try:
+            cursor.execute(f"DELETE FROM {table} WHERE drink_name=%s", arg)  # %s prevents SQL injection!
+            connection.commit()
+            cursor.close()
+            connection.close()
+            print("Drink deleted successfully")
+        except Exception as err:
+            print(err)
 
     # UPDATE person SET fav_drink_id = 1 WHERE id=2
     def save_drink(self, table, name, ft1, ft2):

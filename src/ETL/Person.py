@@ -1,4 +1,4 @@
-import src.ETL.persistence as persist
+from src.ETL.persistence import Database
 
 class Person:
     def __init__(self, first_name, last_name, age, id=None):  # fav_hd/ fav_sd/ fav_ad
@@ -14,28 +14,25 @@ class Person:
         return f"#{self.id} {self.first_name} {self.last_name}   -   {self.age}"
 
 
-def add_person(person):
-    first_name = input("First name: ")
-    last_name = input("Last name: ")
-    age = int(input("Age: "))
+def add_person(db, person, first_name, last_name, age):
     try:
-        new_id = persist.save_person(first_name,last_name,age)
+        new_id = db.save_person(first_name, last_name, age)
         new_person = Person(first_name, last_name, int(age), int(new_id))
         person.append(new_person)
+        print("Person added successfully")
         return new_person
 
-    except Exception:
-        print("Duplicate entry in table")
+    except Exception as err:
+        print(err)
 
 
-def identify_person(search_id, person_list):
+def identify_item_in_list(search_id, search_list):
     try:
-        for i in range(len(person_list)):
-            if person_list[i].id == search_id:
+        for i in range(len(search_list)):
+            if search_list[i].id == search_id:
                 return i
     except Exception as error:
         print(error)
-
 
 
 
