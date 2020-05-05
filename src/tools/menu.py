@@ -1,5 +1,11 @@
 def main_menu():
-    menu_text = """                
+    menu_text = """
+Welcome to BrewHaHa©. 
+Sit down.
+Take a load off.
+Let's get you a drink.
+                   
+                
 Select an option from the list:
     [P]eople
     [D]rinks
@@ -14,7 +20,7 @@ def return_to_menu():
     return
 
 def people_menu():
-    menu_text = """                
+    menu_text = """ 
     Select an option from the list:
         [V]iew full people list
         [S]earch people list
@@ -37,13 +43,23 @@ def drinks_menu():
     return input("Enter selection: ")
 
 def rounds_menu():
-    def people_menu():
-        menu_text = """                
-        Select an option from the list:
-            [V]iew last round
-            [S]earch rounds - Under development
-            [C]reate Round
-            [E]xit
-        """
-        print(menu_text)
-        return input("Enter selection: ")
+    menu_text = """                
+    Select an option from the list:
+        [V]iew latest round
+        [S]earch rounds
+        [C]reate Round
+        [E]xit
+    """
+    print(menu_text)
+    return input("Enter selection: ")
+
+def round_search_menu():
+    menu_text = """                
+    Select an option from the list:
+        [1] Search rounds by person
+        [2] Search rounds by date
+        [3] Search rounds by person and date [UNDER CONSTRUCTION]
+        [E]xit
+    """
+    print(menu_text)
+    return input("Enter selection: ")

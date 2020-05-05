@@ -1,11 +1,8 @@
     ## Transform ###
-from src.ETL.extract import csv_load 
 from datetime import date
 
 
 title_list = ["miss","ms","mrs","mr","dr"]
-
-imp_customers = csv_load("customer.csv")
 
 def name_breaker(name): # Function to reformat names into the order "title","first name", "last name"
     breaking_name = name.strip().lower().replace(".", "") # Strip away unwanted things e.g leading and trailing spaces, \n etc, formats all to lowercase and replaces any "." with ""

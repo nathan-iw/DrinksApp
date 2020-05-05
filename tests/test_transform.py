@@ -87,6 +87,3 @@ class TransformTests(unittest.TestCase): # Ask Lewis: why is this in the class f
         # act and assert
         self.assertRaises(ValueError, lambda:t.age_gen(cust1_dob))
 
-
-if __name__ == "__main__":
-    unittest.main()

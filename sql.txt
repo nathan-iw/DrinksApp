@@ -1,0 +1,18 @@
+# code to create a table
+create table drink (id INT AUTO INCREMENT PRIMARY KEY, drink_type VARCHAR(100), drink_name VARCHAR(100), details VARCHAR(100), price INT)
+
+# code to join round and drink - to transfer drink types across (can be used for ids etc)
+UPDATE round INNER JOIN drink ON round.drink = drink.drink_order SET round.drink_type = drink.drink_type;
+
+#  code to update favourite drinks
+UPDATE person p
+     INNER JOIN (select drinker, drink_id, drink, drink_type, count(*) from round where drink_type='Hot' group by drinker, drink having count(*)>3 order by drinker, count(*) DESC) AS d
+              ON p.full_name = d.drinker SET p.fav_hd_id = d.drink_id;
+
+UPDATE person p
+     INNER JOIN (select drinker, drink_id, drink, drink_type, count(*) from round where drink_type='Soft' group by drinker, drink having count(*)>3 order by drinker, count(*) DESC) AS d
+              ON p.full_name = d.drinker SET p.fav_sd_id = d.drink_id;
+
+UPDATE person p
+     INNER JOIN (select drinker, drink_id, drink, drink_type, count(*) from round where drink_type='Alcoholic' group by drinker, drink having count(*)>3 order by drinker, count(*) DESC) AS d
+              ON p.full_name = d.drinker SET p.fav_ad_id = d.drink_id;

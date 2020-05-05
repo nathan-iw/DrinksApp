@@ -1,28 +1,30 @@
-# Check my DrinksApp
+# **Check my DrinksApp**
 ## If it ain't broke, it's a miracle
 
-This is an app that...
-  - takes people and takes drinks up to a database.
-  - then from this you can make drink rounds, which are recorded for future reference.
-
+This is an app for setting up drinks rounds.
+```
         Select an option from the list:
-        [G]et all people
-        [A]dd a person
-        [D]rinks menu
-        [R]ound builder
-        [V]iew round
-        [E]xit
-
-
-#####[G]et all people
-######List all of the people in the database
-#####[A]dd a person
-######Add a person to the database
-#####[D]rinks menu
-######List unique drink menus - from hot, soft, alcoholic varieties
-#####[R]ound builder
-######Build a new round
-#####[V]iew round
-######View the current round
-#####[E]xit
-######Why would you do that?
+        > [P]eople
+                > [V]iew full people list
+                > [S]earch people list
+                > [A]dd a person to the list
+                > [D]elete a person from the list
+                > [E]xit
+```
+```
+        > [D]rinks
+                > [V]iew full drinks list
+                > [A]dd a drink
+                > [D]elete a drink
+                > [E]xit
+```
+```   
+        > [R]ounds
+                > [V]iew latest round
+                > [S]earch rounds
+                > [C]reate Round
+                > [E]xit
+```   
+```
+        > [E]xit
+```
