@@ -27,16 +27,18 @@ def line_adjustment(word):
 
 # prints rows in a table of objects
 def print_rows(rows):
-    for row in rows:
-        try:
-            print(f"| {row.get_info()}")
-        except AttributeError:
-            print(f"| {row}")
-        except:
-            print("Unexpected error: ", sys.exc_info()[0])
-            raise
+    if rows == []:
+        print("| Move along. Nothing to see here. ")
+    else:
+        for row in rows:
+            try:
+                print(f"| {row.get_info()}")
+            except AttributeError:
+                print(f"| {row}")
+            except:
+                print("Unexpected error: ", sys.exc_info()[0])
+                raise
 
-        # print(f"| {row.get_info()}{line_adjustment(row.get_info())}")
 
 
 # prints outline, header and rows. Building the table
@@ -45,3 +47,11 @@ def print_table(header, rows):
     print_rows(rows)
     print_outline()
 
+def print_dictionary(header, dictionary):
+    print_table_header(header)
+    for key, value in dictionary.items():
+        try:
+            print(f"| {key.first_name} {key.last_name} -  {value.drink_name} {value.details}")
+        except:
+            print(f" {key} -  {value}")
+    print_outline()

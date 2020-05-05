@@ -1,16 +1,17 @@
 import pymysql
-from src.db import db_login as login
-from src.drinks import HotDrink as h, SoftDrink as s, AlcDrink as a
+from os import environ
+from datetime import datetime
+from src.drinks import Drink as d
 from src.ETL import Person as p
 
 class Database():
 
     def get_connection(self):  # function to get the connection string using: pymysql.connect(host, username, password, database)
         db_connection = pymysql.connect(
-            login.db_host,  # host address
-            login.user_name,  # user name
-            login.password,  # pw
-            login.database  # db
+            environ.get("DB_HOST"),  # host
+            environ.get("DB_USER"),  # username
+            environ.get("DB_PW"),  # password
+            environ.get("DB_NAME")  # database
         )
         return db_connection
 
@@ -26,32 +27,77 @@ class Database():
         cursor.close()
         connection.close()
 
+    def save_round(self, brewer, dictionary):
+        connection = self.get_connection()
+        cursor = connection.cursor()
+        date=datetime.today().strftime('%Y-%m-%d')
+        try:
+            for key, value in dictionary.items():
+                round_tuple = (f"{brewer.first_name} {brewer.last_name}", f"{key.first_name} {key.last_name}",
+                               f"{value.drink_name} {value.details}", value.price, date, value.id,
+                               value.drink_type)
+                cursor.execute(
+                """INSERT INTO round (brewer, drinker, drink, price, date, drink_id, drink_type) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s)""", round_tuple)
+        except Exception as err:
+            print(err)
+        connection.commit()
+        cursor.close()
+        connection.close()
 
     def load_all(self, table):  # function to run a select query like `SELECT * FROM players`
         connection = self.get_connection()
         cursor = connection.cursor()
-        cursor.execute(f"SELECT * FROM {table}")
         table_list = []
+        if table == "person":
+            cursor.execute(f"SELECT * FROM {table} ORDER BY last_name")
+        elif table == "drink":
+            cursor.execute(f"SELECT * FROM {table} ORDER BY drink_name")
+        elif table == "round":
+            table_list = {}
+            cursor.execute("SELECT brewer, date FROM round ORDER BY date DESC LIMIT 1")
+            row = cursor.fetchone()
+            date = row[1]
+            brewer = row[0]
+            cursor.execute(f"SELECT * FROM round WHERE date='{date}' AND brewer='{brewer}' ORDER BY date")
         while True:
             row = cursor.fetchone()
             if row == None:
                 break
-            # person = Player(row[1], row[2], row[3], row[4], row[5], row[0])  # row 0 last because it's a default
-            if table == "person":
-                item = p.Person(row[1], row[2], row[3], row[0])
-            elif table == "hot_drink":
-                item = h.HotDrink(row[1], row[2], row[3], row[0])
-            elif table == "soft_drink":
-                item = s.SoftDrink(row[1], row[2], row[3], row[0])
-            elif table == "alc_drink":
-                item = a.AlcDrink(row[1], row[2], row[0])
-
-            table_list.append(item)
-
+            elif table == "person":
+                item = p.Person(row[1], row[2], row[3], row[4], row[5], row[6], row[0])
+                table_list.append(item)
+            elif table == "drink":
+                item = d.Drink(row[1], row[2], row[3], row[4], row[0])
+                table_list.append(item)
+            elif table == "round":
+                table_list[row[1]]=row[2]
         cursor.close()
         connection.close()
         return table_list
 
+    def search_rounds(self,person_name, date):
+        connection = self.get_connection()
+        cursor = connection.cursor()
+        table_list = {}
+        if person_name is not None and date is None:
+            cursor.execute(f"SELECT * FROM round where brewer='{person_name}' AND date = (SELECT MAX(date) FROM round WHERE brewer='{person_name}')")
+        elif person_name is None and date is not None:
+            cursor.execute(f"SELECT * FROM round where date='{date}' ORDER BY date DESC")
+        elif person_name is not None and date is not None:
+            cursor.execute(f"SELECT * FROM round where brewer='{person_name}' AND date='{date}' ORDER BY date DESC")
+        row = cursor.fetchone()
+        print(f"Brewer: {row[0]}")
+        print(f"Date: {row[4]}")
+        while True:
+            row = cursor.fetchone()
+            if row == None:
+                break
+            else:
+                table_list[row[1]] = row[2]
+        cursor.close()
+        connection.close()
+        return table_list
 
     def load_distinct(self, table):  # function to run a select query like `SELECT * FROM players`
         connection = self.get_connection()
@@ -70,8 +116,7 @@ class Database():
         connection.close()
         return table
 
-
-    def save_person(self, first,last,age):
+    def save_person(self, first, last, age):
         connection = self.get_connection()
         cursor = connection.cursor()
         args = (first, last, age)
@@ -85,23 +130,55 @@ class Database():
         connection.close()
         return new_id
 
-    # UPDATE person SET fav_drink_id = 1 WHERE id=2
-    def save_drink(self, table, name, ft1, ft2):
+    def delete_person(self, id):
         connection = self.get_connection()
         cursor = connection.cursor()
+        arg = id
+        try:
+            cursor.execute(f"DELETE FROM person WHERE id=%s",arg)  # %s prevents SQL injection!
+            connection.commit()
+            cursor.close()
+            connection.close()
+            print("Person deleted successfully")
+        except Exception as err:
+            print(err)
 
-        if table == "alc_drink":
-            args = (name,ft1)
-            cursor.execute(f"INSERT INTO {table} (drink_name, specifics) VALUES (%s, %s)",args)
-            # %s prevents SQL injection!
-        elif table == "hot_drink":
-            args = (name, ft1, ft2)
-            cursor.execute(f"INSERT INTO {table} (drink_name, milk, sugar) VALUES (%s, %s, %s)",
-                           args)  # %s prevents SQL injection!
+    def delete_drink(self, drink_type, drink):
+        connection = self.get_connection()
+        cursor = connection.cursor()
+        table = drink_type
+        arg = drink
+        try:
+            cursor.execute(f"DELETE FROM {table} WHERE drink_name=%s", arg)  # %s prevents SQL injection!
+            connection.commit()
+            cursor.close()
+            connection.close()
+            print("Drink deleted successfully")
+        except Exception as err:
+            print(err)
+
+    # UPDATE person SET fav_drink_id = 1 WHERE id=2
+    def save_drink(self, table, type, name, details, price):
+        connection = self.get_connection()
+        cursor = connection.cursor()
+        if details == "-":
+            args = (type, name, details, price, f"{name}")
         else:
-            args = (name, ft1, ft2)
-            cursor.execute(f"INSERT INTO {table} (drink_name, glass, ice) VALUES (%s, %s, %s)",
-                           args)  # %s prevents SQL injection!
+            args = (type, name, details, price, f"{name} {details}")
+        cursor.execute(f"INSERT INTO {table} (drink_type, drink_name, details, price, drink_order) VALUES (%s, %s, %s, %s, %s)", args)
+        #     # %s prevents SQL injection!
+        # if table == "alc_drink":
+        #     args = (name,ft1)
+        #     cursor.execute(f"INSERT INTO {table} (drink_name, specifics) VALUES (%s, %s)",args)
+        #     # %s prevents SQL injection!
+        # elif table == "hot_drink":
+        #     args = (name, ft1, ft2)
+        #     cursor.execute(f"INSERT INTO {table} (drink_name, milk, sugar) VALUES (%s, %s, %s)",
+        #                    args)  # %s prevents SQL injection!
+        # else:
+        #     args = (name, ft1, ft2)
+        #     cursor.execute(f"INSERT INTO {table} (drink_name, glass, ice) VALUES (%s, %s, %s)",
+        #                    args)  # %s prevents SQL injection!
         cursor.execute(f"SELECT MAX(id) FROM {table}")
         new_id = cursor.fetchall()[0][0]
         # except:
@@ -117,3 +194,13 @@ class Database():
         connection.commit()
         cursor.close()
         connection.close()
+
+    def update_favourites(self):
+        connection = self.get_connection()
+        with connection.cursor() as cursor:
+            cursor.execute("""UPDATE person p INNER JOIN (select drinker, drink_id, drink, drink_type, count(*) FROM round WHERE drink_type='Hot' GROUP BY drinker, drink HAVING count(*)>3 ORDER BY drinker, count(*) DESC) AS d ON p.full_name = d.drinker SET p.fav_hd_id = d.drink_id""")
+            cursor.execute("""UPDATE person p INNER JOIN (select drinker, drink_id, drink, drink_type, count(*) FROM round WHERE drink_type='Soft' GROUP BY drinker, drink HAVING count(*)>3 ORDER BY drinker, count(*) DESC) AS d ON p.full_name = d.drinker SET p.fav_sd_id = d.drink_id""")
+            cursor.execute("""UPDATE person p INNER JOIN (select drinker, drink_id, drink, drink_type, count(*) FROM round WHERE drink_type='Alcoholic' GROUP BY drinker, drink HAVING count(*)>3 ORDER BY drinker, count(*) DESC) AS d ON p.full_name = d.drinker SET p.fav_ad_id = d.drink_id""")
+            connection.commit()
+            cursor.close()
+            connection.close()
