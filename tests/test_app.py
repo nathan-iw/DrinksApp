@@ -80,7 +80,7 @@ $$$$$$$$$$$$$    $$$$$$$$"""
         expected = "Hot"
 
         # act
-        actual = MockApp.drink_type()
+        actual = MockApp.drinkType()
 
         # assert
         self.assertEqual(expected,actual)
@@ -94,7 +94,7 @@ $$$$$$$$$$$$$    $$$$$$$$"""
         expected = "Soft"
 
         # act
-        actual = MockApp.drink_type()
+        actual = MockApp.drinkType()
 
         # assert
         self.assertEqual(expected,actual)
@@ -108,7 +108,7 @@ $$$$$$$$$$$$$    $$$$$$$$"""
         expected = "Alcoholic"
 
         # act
-        actual = MockApp.drink_type()
+        actual = MockApp.drinkType()
 
         # assert
         self.assertEqual(expected, actual)

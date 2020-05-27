@@ -12,7 +12,7 @@ def unique(drink_list, drink_type):
     # traverse for all elements
     for i in drink_list:
         # check if exists in unique_list or not
-        if i.drink_type == drink_type and i.drink_name not in unique_list:
+        if i.drinkType == drink_type and i.drink_name not in unique_list:
             unique_list.append(f"{i.drink_name}")
     return unique_list
 
