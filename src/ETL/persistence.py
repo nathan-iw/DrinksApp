@@ -35,7 +35,7 @@ class Database():
             for key, value in dictionary.items():
                 round_tuple = (f"{brewer.first_name} {brewer.last_name}", f"{key.first_name} {key.last_name}",
                                f"{value.drink_name} {value.details}", value.price, date, value.id,
-                               value.drink_type)
+                               value.drinkType)
                 cursor.execute(
                 """INSERT INTO round (brewer, drinker, drink, price, date, drink_id, drink_type) 
                 VALUES (%s, %s, %s, %s, %s, %s, %s)""", round_tuple)
